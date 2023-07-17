@@ -47,6 +47,210 @@ This is 3rd project of Metacrafter, Etherium+AVAX (Intermediate)
 
 ## Code Explaination
 ### MyToken.sol File
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MyToken {
+    string public name = "My Token";
+    string public symbol = "MT";
+    uint256 public totalSupply;
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Mint(address indexed to, uint256 value);
+    event Burn(address indexed from, uint256 value);
+
+    address public owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    constructor(uint256 initialSupply) {
+        totalSupply = initialSupply;
+        balanceOf[msg.sender] = initialSupply;
+        owner = msg.sender;
+    }
+
+    function transfer(address to, uint256 value) external returns (bool) {
+        require(balanceOf[msg.sender] >= value, "Insufficient balance");
+
+        balanceOf[msg.sender] -= value;
+        balanceOf[to] += value;
+
+        emit Transfer(msg.sender, to, value);
+        return true;
+    }
+
+    function approve(address spender, uint256 value) external returns (bool) {
+        allowance[msg.sender][spender] = value;
+
+        emit Approval(msg.sender, spender, value);
+        return true;
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) external returns (bool) {
+        require(balanceOf[from] >= value, "Insufficient balance");
+        require(allowance[from][msg.sender] >= value, "Insufficient allowance");
+
+        balanceOf[from] -= value;
+        balanceOf[to] += value;
+        allowance[from][msg.sender] -= value;
+
+        emit Transfer(from, to, value);
+        return true;
+    }
+
+    function mint(address to, uint256 value) external onlyOwner {
+        totalSupply += value;
+        balanceOf[to] += value;
+
+        emit Mint(to, value);
+    }
+
+    function burn(uint256 value) external {
+        require(balanceOf[msg.sender] >= value, "Insufficient balance");
+
+        balanceOf[msg.sender] -= value;
+        totalSupply -= value;
+
+        emit Burn(msg.sender, value);
+    }
+}
+
+### Line by line explaination
+#### Code
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract MyToken {
+
+This Contract name as MyToken
+
+#### Code
+string public name = "My Token";
+string public symbol = "MT";
+uint256 public totalSupply;
+
+Set String Public Variable name as MY Token and symbol as MT.
+Set unsigned integer whixh public variable totalSupply.
+
+#### Code
+mapping(address => uint256) public balanceOf;
+mapping(address => mapping(address => uint256)) public allowance;
+
+This will map address to balanceOf and allowamce.
+In the first line, it issimply mapping address with their token balance.
+In second line, mapping is done with another mapping, which maps the allowances.
+
+#### Code
+event Transfer(address indexed from, address indexed to, uint256 value);
+event Approval(address indexed owner, address indexed spender, uint256 value);
+event Mint(address indexed to, uint256 value);
+event Burn(address indexed from, uint256 value);
+
+1) **Transfer**: Transfer Token from one account to another.
+2) **Approval**: When allowance for spending tokens get approved then it will be emitted.
+3) **Mint**: When new tokens are minted and added to total supply, then it will be emitted.
+4) **Burn**: Deduction has done.
+
+#### Code
+address public owner;
+modifier onlyOwner() {
+    require(msg.sender == owner, "Only the owner can call this function");
+    _;
+}
+
+Set public variable "owner" which represent address of owner.
+Set Modifier name as onlyOwner which having a condition which depicts if msg sender is owner then and then only this modifir work.
+
+**modifier:** The keyword that modifies the behaviour of function. In this example, modifier restrict this transaction only forr owner.
+
+#### Code
+constructor(uint256 initialSupply) {
+    totalSupply = initialSupply;
+    balanceOf[msg.sender] = initialSupply;
+    owner = msg.sender;
+}
+
+Constructor is generated which takes paramaeter as initialSupply from user.
+It sets the totalSupply to the initialSupply, assigns the initialSupply to the balanceOf the contract deployer (msg.sender), and sets the owner to the contract deployer.
+
+Constructor: Function that initializes contract.
+
+#### Code
+function transfer(address to, uint256 value) external returns (bool) {
+    require(balanceOf[msg.sender] >= value, "Insufficient balance");
+
+    balanceOf[msg.sender] -= value;
+    balanceOf[to] += value;
+
+    emit Transfer(msg.sender, to, value);
+    return true;
+}
+
+Function Transfer, transfers tokens to another addresswhich specifies a condition which checks sufficient balance. 
+If it has sufficient balance then amount will be deducted and added, otherwise it will shows error.
+
+#### Code
+function approve(address spender, uint256 value) external returns (bool) {
+    allowance[msg.sender][spender] = value;
+
+    emit Approval(msg.sender, spender, value);
+    return true;
+}
+
+Approve function, allows approval for another address to spend their tokens.
+
+#### Code
+function transferFrom(address from, address to, uint256 value) external returns (bool) {
+    require(balanceOf[from] >= value, "Insufficient balance");
+    require(allowance[from][msg.sender] >= value, "Insufficient allowance");
+
+    balanceOf[from] -= value;
+    balanceOf[to] += value;
+    allowance[from][msg.sender] -= value;
+
+    emit Transfer(from, to, value);
+    return true;
+}
+
+Function TransferFrom, approved tkens transferred from sender's account to receiver account.
+It has two conditions which need to satisfies: Sufficient Balance and sufficient allowance.
+If both the conditions get approved then this will work as balance deduction from sender's account and addition of tokens in receiver's account.
+If the transactions have done successfully, it will emit as "TRUE".
+
+#### Code
+function mint(address to, uint256 value) external onlyOwner {
+    totalSupply += value;
+    balanceOf[to] += value;
+
+    emit Mint(to, value);
+}
+
+Mint Function, creates new tokens which will add or deduct from specific address.
+
+#### Code
+function burn(uint256 value) external {
+    require(balanceOf[msg.sender] >= value, "Insufficient balance");
+
+    balanceOf[msg.sender] -= value;
+    totalSupply -= value;
+
+    emit Burn(msg.sender, value);
+}
+
+Burn Function, this function burn (deduct) tokens.
+It has condition which checks the sufficient balance or not. If this condition becomes true then amount will be deducted.
+
+
+
 
 
 

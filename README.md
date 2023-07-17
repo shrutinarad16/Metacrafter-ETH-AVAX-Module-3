@@ -250,7 +250,78 @@ function burn(uint256 value) external {
 It has condition which checks the sufficient balance or not. If this condition becomes true then amount will be deducted.*/
 
 
+### deploy.js
 
+const { ethers } = require("hardhat");
+
+async function main() {
+  // Get the contract factory
+  const MyToken = await ethers.getContractFactory("MyToken");
+
+  // Deploy the contract
+  const myToken = await MyToken.deploy(1000000); // Replace with desired initial supply
+
+  // Wait for the contract to be mined
+  await myToken.deployed();
+
+  // Log the contract address
+  console.log("MyToken deployed to:", myToken.address);
+}
+
+// Run the deployment script
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+
+  ### Line by line explaination
+  #### Code
+  const { ethers } = require("hardhat");
+
+/* This line conncts etherium and hardhat.
+Imports ethers object from hardhat framework*/
+
+#### Code
+async function main() {
+  // Get the contract factory
+  const MyToken = await ethers.getContractFactory("MyToken");
+
+/* an asynchronous function named main(). Inside this function, it uses **ethers.getContractFactory("MyToken")** to obtain contract factory which is solidity file named as MYToken.*/
+
+#### Code 
+  // Deploy the contract
+  const myToken = await MyToken.deploy(1000000); // Replace with desired initial supply
+
+/*This deploy the contract by calling **deploy()** function on My Token contract. It has argument 1000000 which has passed and this function will resolve the deploy instances.*/
+
+#### Code
+  // Wait for the contract to be mined
+  await myToken.deployed();
+
+/* This will wait for deployment transaction which should be minted and confirma the contract.*/
+
+#### Code
+  // Log the contract address
+  console.log("MyToken deployed to:", myToken.address);
+
+/* it will console the deployed address and retrives contract address.*/
+
+#### Code
+// Run the deployment script
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+
+/* This is main function which handles errors that occurs during deploying.
+If deployment has successfully done, so it ext as 0.
+Otherwise exit as 1 (if any error occured during deployment).*/
+
+## Loom Video for better clarification
 
 
 

@@ -322,29 +322,4 @@ If deployment has successfully done, so it ext as 0.
 Otherwise exit as 1 (if any error occured during deployment).*/
 
 ## Loom Video for better clarification
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+https://www.loom.com/share/c177127bb979455bbd2e7b2deb1bc1ba
